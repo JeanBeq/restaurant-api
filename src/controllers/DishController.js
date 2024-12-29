@@ -5,8 +5,8 @@ const Dish = require("../models/Dish");
 
 module.exports = function (app, router) {
   router.post(
-    "/dishes",
-    [requireAuth, requireRoles(["RESTAURANT"])],
+    "/dish/new",
+    [requireAuth, requireRoles(["RESTAURANT", "ADMIN"])],
     async (req, res) => {
       try {
         const dish = await Dish.create({
@@ -25,6 +25,31 @@ module.exports = function (app, router) {
   router.get("/dishes", [requireAuth], async (req, res) => {
     try {
       const dishes = await Dish.findAll();
+      res.send(dishes);
+    } catch (error) {
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+
+  router.get("/dish/:id", [requireAuth], async (req, res) => {
+    try {
+      const dish = await Dish.findByPk(req.params.id);
+      if (!dish) {
+        return res.status(404).send({ message: "Dish not found" });
+      }
+      res.send(dish);
+    } catch (error) {
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+
+  router.get("/restaurant/:id/dishes", [requireAuth], async (req, res) => {
+    try {
+      const dishes = await Dish.findAll({
+        where: {
+          restaurantId: req.params.id,
+        },
+      });
       res.send(dishes);
     } catch (error) {
       res.status(500).send({ message: "Internal Server Error" });

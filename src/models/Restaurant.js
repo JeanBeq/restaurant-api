@@ -20,7 +20,7 @@ Restaurant.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    address: {
+    adress: {
       type: DataTypes.STRING,
       allowNull: false,
     },

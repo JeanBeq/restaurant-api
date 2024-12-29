@@ -12,11 +12,12 @@ module.exports = function (app, router) {
       try {
         const restaurant = await Restaurant.create({
           name: req.body.name,
-          address: req.body.address,
+          adress: req.body.adress,
           userId: req.body.userId,
         });
         res.status(201).send(restaurant);
       } catch (error) {
+        console.error(error);
         res.status(500).send({ message: "Internal Server Error" });
       }
     }
@@ -47,6 +48,7 @@ module.exports = function (app, router) {
       res.status(500).send({ message: "Internal Server Error" });
     }
   });
+
   router.delete("/restaurants/:restaurant_id", [requireAuth, requireRoles(["ADMIN"])], async (req, res) => {
     try {
       const restaurant = await Restaurant.findOne({
