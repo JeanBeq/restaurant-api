@@ -2,6 +2,7 @@ const { Router } = require("express");
 const requireRoles = require("../middlewares/require-role");
 const requireAuth = require("../middlewares/require-auth");
 const { Order, OrderItem } = require("../models/Order");
+const Restaurant = require("../models/Restaurant");
 const Dish = require("../models/Dish");
 
 module.exports = function (app, router) {
@@ -31,9 +32,23 @@ module.exports = function (app, router) {
 
   router.get("/orders", [requireAuth, requireRoles(["RESTAURANT", "ADMIN"])], async (req, res) => {
     try {
+      const restaurant = await Restaurant.findOne({
+        where: {
+          userId: req.user.id,
+        },
+      });
+
+      if (!restaurant) {
+        return res.status(404).send({ message: "Restaurant not found" });
+      }
+
       const orders = await Order.findAll({
+        where: {
+          restaurantId: restaurant.id,
+        },
         include: [OrderItem],
       });
+
       res.send(orders);
     } catch (error) {
       res.status(500).send({ message: "Internal Server Error" });
