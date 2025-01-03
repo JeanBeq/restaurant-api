@@ -55,6 +55,27 @@ module.exports = function (app, router) {
     }
   });
 
+  router.get("/orders/restaurant/:restaurantId", [requireAuth, requireRoles(["RESTAURANT", "ADMIN"])], async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId);
+
+      if (!restaurant) {
+        return res.status(404).send({ message: "Restaurant not found" });
+      }
+
+      const orders = await Order.findAll({
+        where: {
+          restaurantId: restaurant.id,
+        },
+        include: [OrderItem],
+      });
+
+      res.send(orders);
+    } catch (error) {
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+
   router.delete("/orders/:id", [requireAuth, requireRoles(["RESTAURANT", "ADMIN"])], async (req, res) => {
     try {
       const order = await Order.findByPk(req.params.id);
