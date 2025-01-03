@@ -12,7 +12,7 @@ module.exports = function (app, router) {
       try {
         const restaurant = await Restaurant.create({
           name: req.body.name,
-          adress: req.body.adress,
+          address: req.body.address,
           userId: req.body.userId,
         });
         res.status(201).send(restaurant);
@@ -38,7 +38,6 @@ module.exports = function (app, router) {
         where: {
           id: req.params.restaurant_id,
         },
-        include: [Dish], // Inclure les plats associés
       });
       if (!restaurant) {
         return res.status(404).send({ message: "Restaurant not found" });

@@ -10,6 +10,7 @@ const USER_ROLES = {
 class User extends Model {
   toJSON() {
     return {
+      id: this.id,
       role: this.role,
       email: this.email,
     };

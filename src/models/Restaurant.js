@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const sequelize = require("../utils/sequelize");
 const User = require("./User");
-const Dish = require("./Dish");
 
 class Restaurant extends Model {
   toJSON() {
@@ -20,7 +19,7 @@ Restaurant.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    adress: {
+    address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
